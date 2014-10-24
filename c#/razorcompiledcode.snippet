@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RazorCompiledCode</Title>
+<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+			</SnippetTypes>
+    </Header>
+    <Snippet>
+	<Imports>
+        <Import>
+          <Namespace>Microsoft.AspNet.Mvc.Razor</Namespace>
+        </Import>
+		<Import>
+          <Namespace>Microsoft.AspNet.FileSystems</Namespace>
+        </Import>Microsoft.Framework.Runtime
+		<Import>
+          <Namespace>System.IO</Namespace>
+        </Import>
+		<Import>
+          <Namespace>Microsoft.Framework.Runtime</Namespace>
+        </Import>
+      </Imports>
+      <References>
+        <Reference>
+          <Assembly></Assembly>
+        </Reference>
+      </References>
+      <Declarations>
+        <Literal>
+          <ID></ID>
+          <Default></Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[ 
+        services.AddSingleton<IRazorCompilationService, WrapperCompilationService>();
+        
+        public class WrapperCompilationService : IRazorCompilationService
+    {
+        private RazorCompilationService defaultService = null;
+        private Guid directoryId = Guid.Empty;
+
+        public WrapperCompilationService(IApplicationEnvironment environment,
+                                        ICompilationService compilationService,
+                                        IMvcRazorHost razorHost)
+        {
+            // This guid would be created only at the time of instanation of the service
+            // as its a singleton. So when an application shuts down and restarts fresh,
+            // we would storing the content in a new directory.
+            directoryId = Guid.NewGuid();
+
+            defaultService = new RazorCompilationService(environment, compilationService, razorHost);
+        }
+
+        public CompilationResult Compile(IFileInfo fileInfo)
+        {
+            CompilationResult result = defaultService.Compile(fileInfo);
+
+            if (!string.IsNullOrWhiteSpace(result.CompiledContent))
+            {
+                FileInfo fi = new FileInfo(string.Format(@"C:\RazorGeneratedFiles\{0}\{1}.cs", directoryId, result.CompiledType.FullName));
+                fi.Directory.Create();
+                using (StreamWriter sw = new StreamWriter(fi.Create()))
+                {
+                    sw.Write(result.CompiledContent);
+                }
+            }
+
+            return result;
+        }
+    }
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

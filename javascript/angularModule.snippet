@@ -25,35 +25,35 @@
       <Code Language="JavaScript">
         <![CDATA[ 
         (function () {
-    var app = angular.module("moduleName", []);
+    var app = angular.module("$moduleName$", []);
 
-    app.controller("$controllerName$", ['$log', '$http', '$scope', '$serviceName$', function ($log, $http, $scope, $serviceName$) {
+    app.controller("$controllerName$", ['$$log', '$$http', '$$scope', '$serviceName$', function ($$log, $$http, $$scope, $serviceName$) {
       
-      $scope.people = [];
+      $$scope.people = [];
       
       this.getPeople = function(){
         var task = $serviceName$.getPeople();
         task.then(
           function (data) {
-              $scope.people = data;
+              $$scope.people = data;
           },
           function (error) {
-              $log.error('failure getting list of people', error);
+              $$log.error('failure getting list of people', error);
           });
       };
     }]);
     
-    app.service('$serviceName$', ['$log', '$http', '$q', function ($log, $http, $q) {
+    app.service('$serviceName$', ['$$log', '$$http', '$$q', function ($$log, $$http, $$q) {
         
         this.getPeople = function () {
-            var task = $q.defer();
+            var task = $$q.defer();
 
-            $http.get('/api/people')
+            $$http.get('/api/people')
                 .success(function (data, status, headers, config) {
                     task.resolve(data);
                 }).error(function (msg, code) {
                     task.reject(msg);
-                    $log.error(msg, code);
+                    $$log.error(msg, code);
                 });
 
             return task.promise;

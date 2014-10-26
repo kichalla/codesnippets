@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>peopleApi</Title>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Code Language="JavaScript">
+        <![CDATA[ 
+        (function () {
+    var app = angular.module("integra", []);
+
+    //------------------------------------
+
+    app.controller("peopleController", ['$scope', 'peopleService', function ($scope, peopleService) {
+        $scope.people = [];
+
+        var task = peopleService.getAllPersons();
+        task.then(
+          function (data) {
+              $scope.people = data;
+          },
+          function (error) {
+              $log.error('failure getting list of people', error);
+          });
+
+        $scope.addPerson = function () {
+            var task = peopleService.addPerson({ name: $scope.name });
+
+            task.then(
+              function (data) {
+                  $scope.people.push(data);
+              },
+              function (error) {
+                  $log.error('failure adding person', error);
+              });
+        };
+
+        $scope.deletePerson = function (person) {
+            var task = peopleService.deletePerson(person.id);
+
+            task.then(
+              function (data) {
+                  var utilities = new Utilities();
+                  utilities.removeItemFromArray($scope.people, person);
+              },
+              function (error) {
+                  $log.error('failure deleting the person', error);
+              });
+        };
+    }]);
+
+    //------------------------------------
+
+    app.service('peopleService', ['$log', '$http', '$q', function ($log, $http, $q) {
+
+        this.getAllPersons = function () {
+            var task = $q.defer();
+
+            $http.get('/api/people')
+                .success(function (data, status, headers, config) {
+                    task.resolve(data);
+                }).error(function (msg, code) {
+                    task.reject(msg);
+                    $log.error(msg, code);
+                });
+
+            return task.promise;
+        };
+
+        this.addPerson = function (person) {
+            var task = $q.defer();
+
+            $http.post('/api/people', person)
+                .success(function (data, status, headers, config) {
+                    task.resolve(data);
+                }).error(function (msg, code) {
+                    task.reject(msg);
+                    $log.error(msg, code);
+                });
+
+            return task.promise;
+        };
+
+        this.deletePerson = function (personId) {
+            var task = $q.defer();
+
+            $http.delete('/api/people/' + personId)
+                .success(function (data, status, headers, config) {
+                    task.resolve(data);
+                }).error(function (msg, code) {
+                    task.reject(msg);
+                    $log.error(msg, code);
+                });
+
+            return task.promise;
+        };
+
+        this.getPerson = function (personId) {
+            var task = $q.defer();
+
+            $http.get('/api/people/' + personId)
+                .success(function (data, status, headers, config) {
+                    task.resolve(data);
+                }).error(function (msg, code) {
+                    task.reject(msg);
+                    $log.error(msg, code);
+                });
+
+            return task.promise;
+        };
+
+    }]);
+})();
+
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

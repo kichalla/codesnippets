@@ -17,14 +17,47 @@
           <ID>controllerName</ID>
           <Default>testController</Default>
         </Literal>
+        <Literal>
+          <ID>serviceName</ID>
+          <Default>testService</Default>
+        </Literal>
       </Declarations>
       <Code Language="JavaScript">
         <![CDATA[ 
         (function () {
     var app = angular.module("moduleName", []);
 
-    app.controller("$controllerName$", ['$http', '$scope', function ($http, $scope) {
+    app.controller("$controllerName$", ['$log', '$http', '$scope', '$serviceName$', function ($log, $http, $scope, $serviceName$) {
+      
+      $scope.people = [];
+      
+      this.getPeople = function(){
+        var task = $serviceName$.getPeople();
+        task.then(
+          function (data) {
+              $scope.people = data;
+          },
+          function (error) {
+              $log.error('failure getting list of people', error);
+          });
+      };
+    }]);
+    
+    app.service('$serviceName$', ['$log', '$http', '$q', function ($log, $http, $q) {
+        
+        this.getPeople = function () {
+            var task = $q.defer();
 
+            $http.get('/api/people')
+                .success(function (data, status, headers, config) {
+                    task.resolve(data);
+                }).error(function (msg, code) {
+                    task.reject(msg);
+                    $log.error(msg, code);
+                });
+
+            return task.promise;
+        };
     }]);
 })();
         ]]>

@@ -37,6 +37,9 @@ namespace Models
 {
     public class StudentViewModel
     {
+        [Key]
+        public int Id { get; set; }
+        
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -55,12 +58,18 @@ namespace Models
 
     public class CourseViewModel
     {
+        [Key]
+        public int Id { get; set; }
+        
         [Required]
         public string Name { get; set; }
     }
 
     public class ProfessorViewModel
     {
+        [Key]
+        public int Id { get; set; }
+        
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -106,6 +115,7 @@ namespace Models
 
     public class Course
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -131,6 +141,7 @@ namespace Models
 
     public class Professor
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]

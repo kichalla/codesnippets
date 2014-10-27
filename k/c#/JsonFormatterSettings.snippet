@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>JsonFormatterSettings</Title>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Imports>
+        <Import>
+          <Namespace>Newtonsoft.Json.Converters</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Newtonsoft.Json.Serialization</Namespace>
+        </Import>
+      </Imports>
+      <Code Language="CSharp">
+        <![CDATA[ 
+        services.AddMvc()
+        .Configure<MvcOptions>(options =>
+        {
+            options.InputFormatters.Clear();
+            options.OutputFormatters.Clear();
+
+            var jsonInputFormatter = new JsonInputFormatter();
+            jsonInputFormatter.SerializerSettings.Converters.Add(new StringEnumConverter());
+            jsonInputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            options.InputFormatters.Add(jsonInputFormatter);
+
+            var jsonOutputFormatter = new JsonOutputFormatter();
+            jsonOutputFormatter.SerializerSettings.Converters.Add(new StringEnumConverter());
+            jsonOutputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            options.OutputFormatters.Add(jsonOutputFormatter);
+        });
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

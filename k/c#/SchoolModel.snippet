@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>School Model</Title>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Collections.Generic</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.ComponentModel.DataAnnotations</Namespace>
+        </Import>
+      </Imports>
+      <References>
+        <Reference>
+          <Assembly></Assembly>
+        </Reference>
+      </References>
+      <Declarations>
+        <Literal>
+          <ID></ID>
+          <Default></Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[ 
+        
+namespace Models
+{
+    public class StudentViewModel
+    {
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Middle Name")]
+        public string MiddleName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Social Security Number")]
+        public string SSN { get; set; }
+    }
+
+    public class CourseViewModel
+    {
+        [Required]
+        public string Name { get; set; }
+    }
+
+    public class ProfessorViewModel
+    {
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Middle Name")]
+        public string MiddleName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+    }
+
+    public class Student
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+
+        public string MiddleName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        public string SSN { get; set; }
+
+        [Required]
+        public string CreatedBy { get; set; }
+
+        [Required]
+        public DateTime CreatedDateInUTC { get; set; }
+
+        [Required]
+        public string UpdatedBy { get; set; }
+
+        [Required]
+        public DateTime LastUpdatedDateInUTC { get; set; }
+
+        public virtual List<Course> Courses { get; set; }
+    }
+
+    public class Course
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        public int ProfessorId { get; set; }
+
+        [Required]
+        public string CreatedBy { get; set; }
+
+        [Required]
+        public DateTime CreatedDateInUTC { get; set; }
+
+        [Required]
+        public string UpdatedBy { get; set; }
+
+        [Required]
+        public DateTime LastUpdatedDateInUTC { get; set; }
+
+        public virtual Professor Professor { get; set; }
+        public virtual List<Student> Students { get; set; }
+    }
+
+    public class Professor
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+
+        public string MiddleName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        public string CreatedBy { get; set; }
+
+        [Required]
+        public DateTime CreatedDateInUTC { get; set; }
+
+        [Required]
+        public string UpdatedBy { get; set; }
+
+        [Required]
+        public DateTime LastUpdatedDateInUTC { get; set; }
+
+        public virtual List<Course> Courses { get; set; }
+    }
+}
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

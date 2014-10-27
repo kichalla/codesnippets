@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>ModelStateValidity</Title>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Imports>
+        <Import>
+          <Namespace>System.Threading.Tasks</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Microsoft.AspNet.Mvc</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.ComponentModel.DataAnnotations</Namespace>
+        </Import>
+      </Imports>
+      <References>
+        <Reference>
+          <Assembly></Assembly>
+        </Reference>
+      </References>
+      <Declarations>
+        <Literal>
+          <ID></ID>
+          <Default></Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[ 
+        public class ModelStateValidationFilterAttribute : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if(!context.ModelState.IsValid)
+            {
+                context.Result = new CustomObjectResult(context.ModelState, 400);
+            }
+        }
+    }
+
+    public class CustomObjectResult : ObjectResult
+    {
+        public CustomObjectResult(object value, int statusCode) : base(value)
+        {
+            this.StatusCode = statusCode;
+        }
+
+        public int StatusCode { get; private set; }
+
+        public override Task ExecuteResultAsync(ActionContext context)
+        {
+            context.HttpContext.Response.StatusCode = this.StatusCode;
+
+            return base.ExecuteResultAsync(context);
+        }
+    }
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
+

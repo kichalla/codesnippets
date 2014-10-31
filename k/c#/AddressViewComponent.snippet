@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>AddressViewComponent</Title>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Imports>
+        <Import>
+          <Namespace></Namespace>
+        </Import>
+      </Imports>
+      <Declarations>
+        <Literal>
+          <ID>ApplicationName</ID>
+          <Default>SampleApp</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[ 
+        
+        @addtaghelper "Microsoft.AspNet.Mvc.TagHelpers"
+@model WebApplication23.ViewComponents.Address
+
+<div>
+    <label for="Type" />:@Model.Type<br />
+    <label for="Line1" />:@Model.Line1<br />
+    <label for="Line2"/>:@Model.Line2<br />
+    <label for="City"/>:@Model.City<br />
+    <label for="State"/>:@Model.State<br />
+    <label for="ZipCode"/>:@Model.ZipCode<br />
+</div>
+//------------------------------------------------
+        using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Mvc;
+
+namespace $ApplicationName$.ViewComponents
+{
+    public class AddressViewComponent : ViewComponent
+    {
+        public IViewComponentResult Invoke()
+        {
+            // todo: get from database instead
+            var address = new Address();
+            address.Type = AddressType.Office;
+            address.Line1 = "One Microsoft Way";
+            address.City = "Redmond";
+            address.State = "WA";
+            address.ZipCode = "98052";
+
+            return View("Details", address);
+        }
+    }
+
+    public class Address
+    {
+        [Display(Name ="Address Type")]
+        public AddressType Type { get; set; }
+
+        public string Line1 { get; set; }
+
+        public string Line2 { get; set; }
+
+        public string City { get; set; }
+
+        public string State { get; set; }
+
+        public string ZipCode { get; set; }
+    }
+
+    public enum AddressType
+    {
+        Residential,
+        Office
+    }
+}
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
+

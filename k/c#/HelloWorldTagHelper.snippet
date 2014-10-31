@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>HelloWorldTagHelper</Title>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Microsoft.AspNet.Razor.Runtime.TagHelpers</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Microsoft.AspNet.Razor.TagHelpers</Namespace>
+        </Import>
+      </Imports>
+      <Declarations>
+        <Literal>
+          <ID>ApplicationName</ID>
+          <Default>SampleApp</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[ 
+        
+
+namespace $ApplicationName$.TagHelpers
+{
+    [ContentBehavior(ContentBehavior.Append)]
+    public class HelloTagHelper : TagHelper
+    {
+        public string Name { get; set; }
+
+        public override void Process(TagHelperContext context, TagHelperOutput output)
+        {
+            output.TagName = "label";
+
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                output.Content = "Hello!";
+            }
+            else
+            {
+                output.Content = string.Format("Hello {0}!", Name);
+            }
+        }
+    }
+}
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
+

@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>PersonEFControllerXUnitTest</Title>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Imports>
+        <Import>
+          <Namespace>System</Namespace>
+        </Import>
+        <Import>
+          <Namespace>System.Net</Namespace>
+        </Import>
+      <Import>
+          <Namespace>System.Net.Http</Namespace>
+        </Import>
+      <Import>
+          <Namespace>Xunit</Namespace>
+        </Import>
+      </Imports>
+      <Declarations>
+        <Literal>
+          <ID>ApplicationName</ID>
+          <Default>SampleApp</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[ 
+namespace $ApplicationName$
+{
+    public class Person
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+    }
+
+    public class PersonsTest
+    {
+        HttpClient client = null;
+        HttpResponseMessage response = null;
+        string baseAddress = ;
+        string controllerRoute = "api/people";
+
+        public PersonsTest()
+        {
+            client = new HttpClient();
+            client.BaseAddress = new Uri(baseAddress);
+        }
+
+        [Fact]
+        public void Test()
+        {
+            //---------------- Create Person ---------------------------
+            Person personExpected = new Person();
+            personExpected.Name = "James";
+
+            response = client.PostAsJsonAsync<Person>(controllerRoute, personExpected).Result;
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            Assert.NotNull(response.Headers.Location);
+
+            Uri location = response.Headers.Location;
+            //---------------- Get Person ---------------------------
+            response = client.GetAsync(location).Result;
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Person personActual = response.Content.ReadAsAsync<Person>().Result;
+            Assert.NotNull(personActual);
+            Assert.Equal(personExpected.Name, personActual.Name);
+
+            //---------------- Update Person ---------------------------
+            personExpected.Id = personActual.Id;
+            personExpected.Name = "James Newton";
+            response = client.PutAsJsonAsync<Person>(location, personExpected).Result;
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+
+            response = client.GetAsync(location).Result;
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            personActual = response.Content.ReadAsAsync<Person>().Result;
+
+            Assert.NotNull(personActual);
+            Assert.Equal(personExpected.Id, personActual.Id);
+            Assert.Equal(personExpected.Name, personActual.Name);
+
+            //---------------- Get All Persons ---------------------------
+            response = client.GetAsync(controllerRoute).Result;
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Person[] persons = response.Content.ReadAsAsync<Person[]>().Result;
+
+            Assert.NotNull(persons);
+            Assert.Equal(1, persons.Length);
+            personActual = persons[0];
+            Assert.Equal(personExpected.Id, personActual.Id);
+            Assert.Equal(personExpected.Name, personActual.Name);
+
+            //---------------- Delete Person ---------------------------
+            response = client.DeleteAsync(location).Result;
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            personActual = response.Content.ReadAsAsync<Person>().Result;
+            Assert.NotNull(personActual);
+            Assert.Equal(personExpected.Id, personActual.Id);
+            Assert.Equal(personExpected.Name, personActual.Name);
+
+            response = client.GetAsync(controllerRoute).Result;
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            persons = response.Content.ReadAsAsync<Person[]>().Result;
+
+            Assert.NotNull(persons);
+            Assert.Equal(0, persons.Length);
+
+            //---------------- Create Person with invalid data...expect model state errors ---------------------------
+            Person invalidPersonData = new Person();
+            invalidPersonData.Name = new string('a', 150); //the max length is 100 characters so we should expect 400 bad request
+
+            response = client.PostAsJsonAsync<Person>(controllerRoute, invalidPersonData).Result;
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+    }
+}
+
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>GpsCoordinateModelBinder</Title>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Imports>
+        <Import>
+          <Namespace>System.Threading.Tasks</Namespace>
+        </Import>
+        <Import>
+          <Namespace>Microsoft.AspNet.Mvc.ModelBinding</Namespace>
+        </Import>
+        <Import>
+          <Namespace>ModelBindingTrials.Controllers</Namespace>
+        </Import>
+      </Imports>
+      <Declarations>
+        <Literal>
+          <ID>ApplicationName</ID>
+          <Default>SampleApp</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="CSharp">
+        <![CDATA[ 
+
+namespace $ApplicationName$.ModelBinders
+{
+    public class GpsCoordinateModelBinder : IModelBinder
+    {
+        public async Task<bool> BindModelAsync(ModelBindingContext bindingContext)
+        {
+            if(bindingContext.ModelType == typeof(Coordinate))
+            {
+                var valueProviderResult = await bindingContext.ValueProvider.GetValueAsync(bindingContext.ModelName);
+                if (valueProviderResult == null)
+                {
+                    return false;
+                }
+
+                var value = valueProviderResult.AttemptedValue;
+                if (string.IsNullOrEmpty(value))
+                {
+                    return false;
+                }
+
+                string[] values = value.Split(',');
+
+                if(values.Length != 2)
+                {
+                    bindingContext.ModelState.AddModelError(bindingContext.ModelName, 
+                        string.Format("Invalid Coordinate data {0}", value));
+
+                    return false;
+                }
+
+                double latitude;
+                if (!double.TryParse(values[0], out latitude))
+                {
+                    bindingContext.ModelState.AddModelError(bindingContext.ModelName,
+                           string.Format("Invalid value for latitude: {0}", values[0]));
+
+                    return false;
+                }
+
+                double longitude;
+                if (!double.TryParse(values[1], out longitude))
+                {
+                    bindingContext.ModelState.AddModelError(bindingContext.ModelName,
+                           string.Format("Invalid value for longitude: {0}", values[1]));
+
+                    return false;
+                }
+
+                var cooridnate = new Coordinate();
+                cooridnate.Latitude = latitude;
+                cooridnate.Longitude = longitude;
+
+                bindingContext.Model = cooridnate;
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
+        ]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

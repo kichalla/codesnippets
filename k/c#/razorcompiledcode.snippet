@@ -48,17 +48,17 @@
         {
             // This guid would be created only at the time of instanation of the service
             // as its a singleton. So when an application shuts down and restarts fresh,
-            // we would storing the content in a new directory.
+            // we would be storing the content in a new directory.
             directoryId = Guid.NewGuid();
 
-            defaultService = new RazorCompilationService(environment, compilationService, razorHost);
+            defaultService = new RazorCompilationService(compilationService, razorHost);
         }
 
-        public CompilationResult Compile(IFileInfo fileInfo)
+        public CompilationResult Compile(RelativeFileInfo fileInfo)
         {
             CompilationResult result = defaultService.Compile(fileInfo);
-
-            if (!string.IsNullOrWhiteSpace(result.CompiledContent))
+            
+            if (result != null && !string.IsNullOrWhiteSpace(result.CompiledContent))
             {
                 FileInfo fi = new FileInfo(string.Format(@"C:\RazorGeneratedFiles\{0}\{1}.cs", directoryId, result.CompiledType.FullName));
                 fi.Directory.Create();
